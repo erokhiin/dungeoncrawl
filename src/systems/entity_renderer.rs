@@ -7,16 +7,11 @@ pub fn entity_renderer(ecs: &SubWorld, #[resource] canera: &Camera) {
     let mut draw_batch = DrawBatch::new();
     draw_batch.target(1);
     let offset = Point::new(canera.left_x, canera.top_y);
-    
+
     <(&Point, &Render)>::query()
-      .iter(ecs)
-      .for_each(|(pos, render)| {
-        draw_batch.set(
-          *pos - offset,
-          render.color,
-          render.glyph
-        );
-      }
-    );
+        .iter(ecs)
+        .for_each(|(pos, render)| {
+            draw_batch.set(*pos - offset, render.color, render.glyph);
+        });
     draw_batch.submit(5000).expect("Batch error");
 }

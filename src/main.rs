@@ -37,7 +37,8 @@ impl State {
         let mut rng = RandomNumberGenerator::new();
         let map_builder = MapBuilder::new(&mut rng);
         spawn_player(&mut ecs, map_builder.player_start);
-        map_builder.rooms
+        map_builder
+            .rooms
             .iter()
             .skip(1)
             .map(|r| r.center())
@@ -61,7 +62,6 @@ impl GameState for State {
         self.resources.insert(ctx.key);
         self.systems.execute(&mut self.ecs, &mut self.resources);
         render_draw_buffer(ctx).expect("Render error");
-        
     }
 }
 
