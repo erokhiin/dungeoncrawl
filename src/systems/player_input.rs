@@ -34,7 +34,7 @@ pub fn player_input(
 
         if is_player_do_something {
             let mut hit_something = false;
-            
+
             enemies
                 .iter(ecs)
                 .filter(|(_, pos)| **pos == destination)
@@ -49,10 +49,11 @@ pub fn player_input(
                         },
                     ));
                 });
-            
+
             if !hit_something {
-                commands
-                .push(((), WantsToMove {
+                commands.push((
+                    (),
+                    WantsToMove {
                         entity: player_entity,
                         destination,
                     },
