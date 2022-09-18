@@ -47,7 +47,7 @@ pub fn chaising(#[resource] map: &Map, ecs: &SubWorld, commands: &mut CommandBuf
                     }
                     attacked = true
                 });
-
+            // add collision check
             if !attacked {
                 commands.push((
                     (),
