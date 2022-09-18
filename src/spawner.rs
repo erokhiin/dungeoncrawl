@@ -5,8 +5,8 @@ pub fn spawn_player(ecs: &mut World, pos: Point) {
         Player,
         pos,
         Health {
-            current: 20,
-            max: 20,
+            current: 10,
+            max: 10,
         },
         Render {
             color: ColorPair::new(WHITE, BLACK),
@@ -17,8 +17,7 @@ pub fn spawn_player(ecs: &mut World, pos: Point) {
 
 pub fn spawn_monster(ecs: &mut World, rng: &mut RandomNumberGenerator, pos: Point) {
     match rng.roll_dice(1, 10) {
-        // 8 in 10 chance of getting a goblin
-        1..=8 => ecs.push((
+        1..=6 => ecs.push((
             Enemy,
             pos,
             Render {
@@ -30,7 +29,6 @@ pub fn spawn_monster(ecs: &mut World, rng: &mut RandomNumberGenerator, pos: Poin
             Health { current: 1, max: 1 },
             Name("Goblin".to_string()),
         )),
-        // 2 in 10 chance of getting an orc
         _ => ecs.push((
             Enemy,
             pos,
@@ -38,7 +36,7 @@ pub fn spawn_monster(ecs: &mut World, rng: &mut RandomNumberGenerator, pos: Poin
                 color: ColorPair::new(WHITE, BLACK),
                 glyph: to_cp437('o'),
             },
-            // Orc will chase the player
+            // Orc will chaise the player
             ChasingPlayer {},
             Health { current: 2, max: 2 },
             Name("Orc".to_string()),
