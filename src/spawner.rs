@@ -16,30 +16,32 @@ pub fn spawn_player(ecs: &mut World, pos: Point) {
 }
 
 pub fn spawn_monster(ecs: &mut World, rng: &mut RandomNumberGenerator, pos: Point) {
-    let (hp, name, glyph) = match rng.roll_dice(1, 10) {
-        1..=8 => goblin(),
-        _ => orc(),
+    match rng.roll_dice(1, 10) {
+        // 8 in 10 chance of getting a goblin
+        1..=8 => ecs.push((
+            Enemy,
+            pos,
+            Render {
+                color: ColorPair::new(WHITE, BLACK),
+                glyph: to_cp437('g'),
+            },
+            // Goblin is a monster that moves randomly
+            MovingRandomly {},
+            Health { current: 1, max: 1 },
+            Name("Goblin".to_string()),
+        )),
+        // 2 in 10 chance of getting an orc
+        _ => ecs.push((
+            Enemy,
+            pos,
+            Render {
+                color: ColorPair::new(WHITE, BLACK),
+                glyph: to_cp437('o'),
+            },
+            // Orc will chase the player
+            ChasingPlayer {},
+            Health { current: 2, max: 2 },
+            Name("Orc".to_string()),
+        )),
     };
-    ecs.push((
-        Enemy,
-        pos,
-        Render {
-            color: ColorPair::new(WHITE, BLACK),
-            glyph,
-        },
-        MovingRandomly {},
-        Health {
-            current: hp,
-            max: hp,
-        },
-        Name(name),
-    ));
-}
-
-fn goblin() -> (i32, String, FontCharType) {
-    (1, "Goblin".to_string(), to_cp437('g'))
-}
-
-fn orc() -> (i32, String, FontCharType) {
-    (2, "Orc".to_string(), to_cp437('o'))
 }
