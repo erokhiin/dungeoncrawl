@@ -45,9 +45,9 @@ pub fn chaising(#[resource] map: &Map, ecs: &SubWorld, commands: &mut CommandBuf
                             },
                         ));
                     }
-                    attacked = true
+                    attacked = true // This prevents the monster from moving into a tile containing another monster
                 });
-            // add collision check
+
             if !attacked {
                 commands.push((
                     (),

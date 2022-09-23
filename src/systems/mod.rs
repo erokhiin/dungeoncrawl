@@ -1,5 +1,6 @@
 use crate::prelude::*;
 
+mod chaising;
 mod combat;
 mod end_turn;
 mod entity_renderer;
@@ -9,7 +10,6 @@ mod movement;
 mod player_input;
 mod random_move;
 mod tooltips;
-mod chaising;
 
 pub fn build_input_scheduler() -> Schedule {
     Schedule::builder()
