@@ -5,6 +5,7 @@ pub struct MapBuilder {
     pub map: Map,
     pub rooms: Vec<Rect>,
     pub player_start: Point,
+    pub the_glitch_start: Point,
 }
 
 impl MapBuilder {
@@ -13,11 +14,37 @@ impl MapBuilder {
             map: Map::new(),
             rooms: Vec::new(),
             player_start: Point::zero(),
+            the_glitch_start: Point::zero(),
         };
+
+    
         mb.fill(TileType::Wall);
         mb.build_random_rooms(rng);
         mb.build_corridors(rng);
         mb.player_start = mb.rooms[0].center();
+
+        // Mb I should use simpler way to get the last room
+        // set last room to be the glitch room
+        // mb.the_glitch_start = mb.rooms[NUM_ROOMS - 1].center();
+
+
+        const UNREACHABLE: &f32 = &f32::MAX;
+        let dijkstra_map = DijkstraMap::new(
+            SCREEN_WIDTH,
+            SCREEN_HEIGHT,
+            &vec![mb.map.point2d_to_index(mb.player_start)],
+            &mb.map,
+            1024.0,
+        );
+        mb.the_glitch_start = mb.map.index_to_point2d(
+            dijkstra_map.map
+                .iter()
+                .enumerate()
+                .filter(|(_, dist)| *dist < UNREACHABLE)
+                .max_by(|a, b| a.1.partial_cmp(b.1).unwrap())
+                .unwrap().0
+        );
+
         mb
     }
 

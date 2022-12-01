@@ -43,3 +43,16 @@ pub fn spawn_monster(ecs: &mut World, rng: &mut RandomNumberGenerator, pos: Poin
         )),
     };
 }
+
+pub fn spawn_the_glitch(ecs: &mut World, pos: Point) {
+    ecs.push((
+        Item,
+        TheGlitch,
+        pos,
+        Render {
+            color: ColorPair::new(WHITE, BLACK),
+            glyph: to_cp437('/'),
+        },
+        Name("The ~*Gl17ch*~".to_string()),
+    ));
+}
