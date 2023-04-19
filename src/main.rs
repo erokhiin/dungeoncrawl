@@ -59,7 +59,25 @@ impl State {
             monster_systems: build_monster_scheduler(),
         }
     }
-    
+
+    fn reset_game_state(&mut self) {
+        self.ecs = World::default();
+        self.resources = Resources::default();
+        let mut rng = RandomNumberGenerator::new();
+        let map_builder = MapBuilder::new(&mut rng);
+        spawn_player(&mut self.ecs, map_builder.player_start);
+        spawn_the_glitch(&mut self.ecs, map_builder.the_glitch_start);
+        map_builder
+            .rooms
+            .iter()
+            .skip(1)
+            .map(|r| r.center())
+            .for_each(|pos| spawn_monster(&mut self.ecs, &mut rng, pos));
+        self.resources.insert(map_builder.map);
+        self.resources.insert(Camera::new(map_builder.player_start));
+        self.resources.insert(TurnState::AwaitingInput);
+    }
+
     fn game_over(&mut self, ctx: &mut BTerm) {
         ctx.set_active_console(2);
         ctx.print_color_centered(2, RED, BLACK, "Your quest has ended.");
@@ -81,28 +99,51 @@ impl State {
             BLACK,
             "Don't worry, you can always try again with a new hero.",
         );
-        ctx.print_color_centered(9, GREEN, BLACK, "Pres RETURN to play again");
-    
+        ctx.print_color_centered(
+            9,
+            GREEN,
+            BLACK,
+            "Press RETURN to play again, or ESC to quit.",
+        );
+
         if let Some(VirtualKeyCode::Return) = ctx.key {
-            self.ecs = World::default();
-            self.resources = Resources::default();
-            let mut rng = RandomNumberGenerator::new();
-            let map_builder = MapBuilder::new(&mut rng);
-            spawn_player(&mut self.ecs, map_builder.player_start);
-            spawn_the_glitch(&mut self.ecs, map_builder.the_glitch_start);
-            map_builder
-                .rooms
-                .iter()
-                .skip(1)
-                .map(|r| r.center())
-                .for_each(|pos| spawn_monster(&mut self.ecs, &mut rng, pos));
-            self.resources.insert(map_builder.map);
-            self.resources.insert(Camera::new(map_builder.player_start));
-            self.resources.insert(TurnState::AwaitingInput);
+            self.reset_game_state();
+        }
+        if let Some(VirtualKeyCode::Escape) = ctx.key {
+            ctx.quit();
+        }
+    }
+
+    fn victory(&mut self, ctx: &mut BTerm) {
+        ctx.set_active_console(2);
+        ctx.print_color_centered(2, GREEN, BLACK, "You have won!");
+        ctx.print_color_centered(
+            4,
+            WHITE,
+            BLACK,
+            "You take the ~*Gl17ch*~ and feel its power.",
+        );
+        ctx.print_color_centered(
+            5,
+            WHITE,
+            BLACK,
+            "Your town is saved, and you are hailed as a hero.",
+        );
+        ctx.print_color_centered(
+            7,
+            GREEN,
+            BLACK,
+            "Press RETURN to play again, or ESC to quit.",
+        );
+
+        if let Some(VirtualKeyCode::Return) = ctx.key {
+            self.reset_game_state();
+        }
+        if let Some(VirtualKeyCode::Escape) = ctx.key {
+            ctx.quit();
         }
     }
 }
-
 
 impl GameState for State {
     fn tick(&mut self, ctx: &mut BTerm) {
@@ -129,9 +170,8 @@ impl GameState for State {
             TurnState::MonsterTurn => self
                 .monster_systems
                 .execute(&mut self.ecs, &mut self.resources),
-            TurnState::GameOver => {
-                self.game_over(ctx)
-            }
+            TurnState::GameOver => self.game_over(ctx),
+            TurnState::Victory => self.victory(ctx),
         }
         render_draw_buffer(ctx).expect("Render error");
     }

@@ -10,7 +10,7 @@ pub fn end_turn(
     #[resource] turn_state: &mut TurnState
 ) {
 
-    let mut player_hp = <&Health>::query()
+    let mut player_hp = <(&Health, &Point)>::query()
         .filter(component::<Player>());
     let mut amulet = <&Point>::query()
         .filter(component::<TheGlitch>());
