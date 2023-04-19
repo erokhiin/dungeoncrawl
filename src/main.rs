@@ -129,7 +129,7 @@ impl GameState for State {
             TurnState::MonsterTurn => self
                 .monster_systems
                 .execute(&mut self.ecs, &mut self.resources),
-            TurnState::GaneOver => {
+            TurnState::GameOver => {
                 self.game_over(ctx)
             }
         }

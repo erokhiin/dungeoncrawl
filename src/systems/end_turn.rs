@@ -20,7 +20,7 @@ pub fn end_turn(
     player_hp.iter(ecs)
         .for_each(|hp| {
             if hp.current < 1 {
-                new_state = TurnState::GaneOver;
+                new_state = TurnState::GameOver;
             }
         });
 
