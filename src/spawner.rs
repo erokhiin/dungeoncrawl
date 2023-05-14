@@ -12,6 +12,7 @@ pub fn spawn_player(ecs: &mut World, pos: Point) {
             color: ColorPair::new(WHITE, BLACK),
             glyph: to_cp437('@'),
         },
+        FieldOfView::new(8),
     ));
 }
 
@@ -28,6 +29,7 @@ pub fn spawn_monster(ecs: &mut World, rng: &mut RandomNumberGenerator, pos: Poin
             MovingRandomly {},
             Health { current: 1, max: 1 },
             Name("Goblin".to_string()),
+            FieldOfView::new(6),
         )),
         _ => ecs.push((
             Enemy,
@@ -40,6 +42,7 @@ pub fn spawn_monster(ecs: &mut World, rng: &mut RandomNumberGenerator, pos: Poin
             ChasingPlayer {},
             Health { current: 2, max: 2 },
             Name("Orc".to_string()),
+            FieldOfView::new(6),
         )),
     };
 }

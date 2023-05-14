@@ -5,7 +5,7 @@ use crate::prelude::*;
 #[read_component(ChasingPlayer)]
 #[read_component(Health)]
 #[read_component(Player)]
-pub fn chaising(#[resource] map: &Map, ecs: &SubWorld, commands: &mut CommandBuffer) {
+pub fn chasing(#[resource] map: &Map, ecs: &SubWorld, commands: &mut CommandBuffer) {
     let mut movers = <(Entity, &Point, &ChasingPlayer)>::query();
     let mut positions = <(Entity, &Point, &Health)>::query();
     let mut player = <(&Point, &Player)>::query();
