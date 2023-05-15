@@ -25,8 +25,7 @@ pub fn spawn_monster(ecs: &mut World, rng: &mut RandomNumberGenerator, pos: Poin
                 color: ColorPair::new(WHITE, BLACK),
                 glyph: to_cp437('g'),
             },
-            // Goblin is a monster that moves randomly
-            MovingRandomly {},
+            ChasingPlayer {},
             Health { current: 1, max: 1 },
             Name("Goblin".to_string()),
             FieldOfView::new(6),
@@ -38,7 +37,6 @@ pub fn spawn_monster(ecs: &mut World, rng: &mut RandomNumberGenerator, pos: Poin
                 color: ColorPair::new(WHITE, BLACK),
                 glyph: to_cp437('o'),
             },
-            // Orc will chaise the player
             ChasingPlayer {},
             Health { current: 2, max: 2 },
             Name("Orc".to_string()),
